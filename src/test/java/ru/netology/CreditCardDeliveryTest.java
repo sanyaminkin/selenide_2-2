@@ -1,10 +1,12 @@
 package ru.netology;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.selector.ByText;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
@@ -22,6 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreditCardDeliveryTest {
 
+    public String generateDate(long addDays, String pattern) {
+        return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
+    }
+
     @BeforeEach
     void setUp() {
         open("http://localhost:9999");
@@ -30,15 +36,18 @@ public class CreditCardDeliveryTest {
     @Test
     void shouldMakeOrderTest() {
         $("[data-test-id='city']").$("[placeholder='Город']").setValue("Санкт-Петербург");
-        LocalDate localDate = LocalDate.now();
-        LocalDate newDate = localDate.plusDays(3);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String dateText = newDate.format(formatter);
-        $("[data-test-id='date']").$("[placeholder='Дата встречи']").setValue(dateText);
+        //LocalDate localDate = LocalDate.now();
+        //LocalDate newDate = localDate.plusDays(3);
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        //String dateText = newDate.format(formatter);
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        $("[data-test-id='date'] input").setValue(planningDate);
         $("[data-test-id= 'name']").$("[name ='name']").setValue("Николай Римский-Корсаков");
         $("[data-test-id='phone']").$("[name='phone']").setValue("+71234567890");
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Забронировать")).click();
         $("[data-test-id='notification']").shouldBe(visible, Duration.ofSeconds(15));
+        $(".notification__content").shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15)).shouldBe(Condition.visible);
+
     }
 }
