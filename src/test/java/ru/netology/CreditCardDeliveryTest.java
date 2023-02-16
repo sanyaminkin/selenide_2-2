@@ -37,13 +37,8 @@ public class CreditCardDeliveryTest {
     @Test
     void shouldMakeOrderTest() {
         $("[data-test-id='city']").$("[placeholder='Город']").setValue("Санкт-Петербург");
-        //LocalDate localDate = LocalDate.now();
-        //LocalDate newDate = localDate.plusDays(3);
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        //String dateText = newDate.format(formatter);
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
-
-        String planningDate = new String();
+        String planningDate = generateDate(4, "dd.MM.yyyy");
         $("[data-test-id='date'] input").setValue(planningDate);
         $("[data-test-id= 'name']").$("[name ='name']").setValue("Николай Римский-Корсаков");
         $("[data-test-id='phone']").$("[name='phone']").setValue("+71234567890");
